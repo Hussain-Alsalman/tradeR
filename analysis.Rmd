@@ -1,0 +1,79 @@
+---
+title: "Banks Report"
+author: "Hussain Alsalman"
+date: "6/9/2021"
+output: html_document
+---
+
+```{r}
+get_companies <- function(symbols, from, to) {
+  list
+}
+symbols <- c(2222,2050)
+companies <- vector("list",length = length(symbols))
+for (symbol in symbols){
+    print(symbol)
+}
+
+```
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("tasi")
+library("quantmod")
+library("TTR")
+```
+
+## Saudi Banks
+
+```{r getting_data, include=FASLE}
+banks_indx <-get_banks(start_date = "2016-01-03", end_date = as.character(Sys.Date()))
+Riadh_bank <- get_company_records(start_date = "2016-01-03",  end_date = as.character(Sys.Date()), company_symbol = 1010)
+```
+
+```{r visualization}
+banks_indx_xts <- df_to_xts(banks_indx)
+Riadh_bank_xts <- df_to_xts(Riadh_bank)
+
+chart_Series(Riadh_bank_xts)
+add_TA(CCI(HLC(Riadh_bank_xts)))
+
+
+#chart_Series(scale(merge(,df_to_xts(Riadh_bank)$Close)), type = "line",col = c("red", "blue"))
+```
+
+
+
+
+```{r}
+library("tidyquant")
+Riadh_bank_xts %>%  timetk::tk_tbl() %>% 
+  tq_transmute(select     = Close, 
+                 mutate_fun = periodReturn, 
+                 period     = "yearly", 
+                 type       = "arithmetic")%>% 
+  ggplot2::ggplot() + ggplot2::geom_line(mapping =ggplot2::aes(x = index, y = yearly.returns))
+```
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
